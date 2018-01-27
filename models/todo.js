@@ -5,7 +5,7 @@ var mongoose = require("mongoose");
 var todoSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: "Name cannont be black!"
+        required: "Name cannot be blank!"
     },
     completed: {
         type: Boolean,

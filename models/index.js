@@ -6,7 +6,13 @@ var mongoose = require("mongoose");
 mongoose.set("debug", true);
 
 // Connect to db server
-mongoose.connect("mongodb://localhost/todo-api");
+// MY NOTE: for some reason when I used "localhost" instead of "127.0.0.1"
+// I kept getting a MongoNetworkError
+mongoose.connect("mongodb://127.0.0.1/todo-api", function(err) {
+    if (err) {
+        console.log("CONNETION ERROR");
+    }
+});
 // mongoose.connect(process.env.DATABASEURL, {useMongoClient: true});
 
 // To allow you to use the Promise syntax
