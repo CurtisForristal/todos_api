@@ -18,7 +18,7 @@ router.get("/", function(req, res) {
     })
     .catch(function(err) {
         res.send(err);
-    })
+    });
 });
 
 
@@ -32,7 +32,19 @@ router.post("/", function(req, res) {
     })
     .catch(function(err) {
         res.send(err);
+    });
+});
+
+
+// SHOW ROUTE
+router.get("/:todoId", function(req, res) {
+    db.Todo.findById(req.params.todoId)
+    .then(function(foundTodo) {
+        res.json(foundTodo);
     })
+    .catch(function(err) {
+        res.send(err);
+    });
 });
 
 
