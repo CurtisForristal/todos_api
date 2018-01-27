@@ -48,4 +48,17 @@ router.get("/:todoId", function(req, res) {
 });
 
 
+// UPDATE ROUTE
+router.put("/:todoId", function(req, res) {
+    // NOTE: {new: true} will make findByIdAndUpdate respond with the updated object instead of the old one
+    db.Todo.findByIdAndUpdate({_id: req.params.todoId}, req.body, {new: true})
+    .then(function(todo) {
+        res.json(todo)
+    })
+    .catch(function(err) {
+        res.send(err);
+    });
+});
+
+
 module.exports = router;
