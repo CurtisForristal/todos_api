@@ -1,8 +1,12 @@
 var express = require("express");
     app = express();
     port = process.env.PORT || 27017;
+    bodyParser = require("body-parser");
 
 var todoRoutes = require("./routes/todos");
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
 
 
 

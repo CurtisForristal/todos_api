@@ -3,6 +3,7 @@ var mongoose = require("mongoose");
 
 // Set debog mode to true in order to see what is happening at any given point
 // when things are being sent to a db and failing
+// This will display newly added entries in the console
 mongoose.set("debug", true);
 
 // Connect to db server

@@ -4,7 +4,9 @@ var router = express.Router();
 // only need to require the models dir because it will automatically look for index.js there
 var db = require("../models")
 
+// ROUTES
 
+// INDEX ROUTE
 router.get("/", function(req, res) {
     // Send all the todos in the db
 
@@ -19,6 +21,19 @@ router.get("/", function(req, res) {
     })
 });
 
+
+// CREATE ROUTE
+router.post("/", function(req, res) {
+    db.Todo.create(req.body)
+    .then(function(newTodo) {
+        // Respond with status code 201, which is the code for created
+        // Also respond with the newTodo in json
+        res.status(201).json(newTodo);
+    })
+    .catch(function(err) {
+        res.send(err);
+    })
+});
 
 
 module.exports = router;
