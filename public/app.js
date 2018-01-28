@@ -13,6 +13,17 @@ $(document).ready(function() {
             createTodo();
         }
     });
+
+    // Listen if the X is clicked
+    // Would be nice to attach the listener to the span, but this won't work because 
+    // it is not on the page when it loads
+    // The "list" is there when it loads though
+    // But to limit it to only register on spans with the "list",
+    // the span tag is added after "click"
+    $(".list").on("click", "span", function() {
+        // "this" refers to the span, ".parent" refers to the li
+        removeTodo($(this).parent());
+    });
     // We are not handling errors in this app, but you SHOULD!
 });
 
@@ -34,7 +45,10 @@ function addTodos(todos) {
 // Add single todo to the page by appending the name of each todo to the page as an li
 function addTodo(todo) {
     // jQuery to create a new li tag, and add the "task" class to the todo for styling
-    var newTodo = $("<li class='task'>" + todo.name + "</li>");
+    // The "X" is also added to act as the delete button
+    var newTodo = $("<li class='task'>" + todo.name + " <span>X</span></li>");
+    // Store the newTodo's id in jQuery's data so it can be retrived later when you click the X to delete it
+    newTodo.data("id", todo._id);
     // If the todo is "completed", add class "done" so it displays with the strikethrough styling
     if (todo.completed) {
         newTodo.addClass("done");
@@ -55,6 +69,27 @@ function createTodo() {
         // clear the text input by setting the value to an empty string
         $("#todoInput").val("");
         addTodo(newTodo);
+    })
+    .catch(function(err) {
+        console.log(err);
+    })
+}
+
+
+// Remove a todo from the db and the DOM
+function removeTodo(todo) {
+    // Remove the todo from the db
+    // Retrieve the id of the clicked todo from jQuery's data (which we stored in addTodo())
+    var clickedId = todo.data("id");
+    // Build the url to set the delete request to
+    var deleteUrl = "/api/todos/" + clickedId;
+    $.ajax({
+        method: "DELETE",
+        url: deleteUrl
+    })
+    .then(function(data) {
+        // Remove the todo from the DOM
+        todo.remove();
     })
     .catch(function(err) {
         console.log(err);
