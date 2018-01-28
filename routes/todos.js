@@ -3,74 +3,22 @@ var router = express.Router();
 // code for the todo model is stored in the db variable
 // only need to require the models dir because it will automatically look for index.js there
 var db = require("../models")
+var helpers = require("../helpers/todos");
+
 
 // ROUTES
 
-// INDEX ROUTE
-router.get("/", function(req, res) {
-    // Send all the todos in the db
-
-    // Instead of putting a callback in find(),
-    // can do it with Promises
-    db.Todo.find()
-    .then(function(todos) {
-        res.json(todos);
-    })
-    .catch(function(err) {
-        res.send(err);
-    });
-});
+// INDEX and CREATE ROUTES
+router.route("/")
+    .get(helpers.getTodos)
+    .post(helpers.createTodo)
 
 
-// CREATE ROUTE
-router.post("/", function(req, res) {
-    db.Todo.create(req.body)
-    .then(function(newTodo) {
-        // Respond with status code 201, which is the code for created
-        // Also respond with the newTodo in json
-        res.status(201).json(newTodo);
-    })
-    .catch(function(err) {
-        res.send(err);
-    });
-});
+// SHOW, UPDATE, and DELETE ROUTES
+router.route("/:todoId")
+    .get(helpers.getTodo)
+    .put(helpers.updateTodo)
+    .delete(helpers.deleteTodo)
 
-
-// SHOW ROUTE
-router.get("/:todoId", function(req, res) {
-    db.Todo.findById(req.params.todoId)
-    .then(function(foundTodo) {
-        res.json(foundTodo);
-    })
-    .catch(function(err) {
-        res.send(err);
-    });
-});
-
-
-// UPDATE ROUTE
-router.put("/:todoId", function(req, res) {
-    // NOTE: {new: true} will make findByIdAndUpdate respond with the updated object instead of the old one
-    db.Todo.findByIdAndUpdate({_id: req.params.todoId}, req.body, {new: true})
-    .then(function(todo) {
-        res.json(todo)
-    })
-    .catch(function(err) {
-        res.send(err);
-    });
-});
-
-
-// DELETE ROUTE
-router.delete("/:todoId", function(req, res) {
-    db.Todo.remove({_id: req.params.todoId})
-    .then(function() {
-        res.json({message: "We deleted it!"});
-    })
-    .catch(function(err) {
-        res.send(err);
-    });
-});
-
-
+// EXPORT
 module.exports = router;
