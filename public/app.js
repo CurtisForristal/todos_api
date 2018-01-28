@@ -14,10 +14,12 @@ function addTodos(todos) {
     // Loop through each todo
     // Append the name of each todo to the page as an li
     todos.forEach(function(todo) {
-        // jQuery to create a new li tag
-        var newTodo = $("<li>" + todo.name + "</li>");
-        // Add the "task" class to the todo for styling
-        newTodo.addClass("task");
+        // jQuery to create a new li tag, and add the "task" class to the todo for styling
+        var newTodo = $("<li class='task'>" + todo.name + "</li>");
+        // If the todo is "completed", add class "done" so it displays with the strikethrough styling
+        if (todo.completed) {
+            newTodo.addClass("done");
+        }
         // Append it to the ul with class "list"
         $(".list").append(newTodo);
     });
