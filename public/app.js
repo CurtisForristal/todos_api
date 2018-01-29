@@ -13,17 +13,27 @@ $(document).ready(function() {
             createTodo();
         }
     });
-
+    
     // Listen if the X is clicked
     // Would be nice to attach the listener to the span, but this won't work because 
     // it is not on the page when it loads
     // The "list" is there when it loads though
     // But to limit it to only register on spans with the "list",
     // the span tag is added after "click"
-    $(".list").on("click", "span", function() {
+    $(".list").on("click", "span", function(e) {
+        // Prevent the click listener for the li (below) from triggering when X is clicked
+        e.stopPropagation();
         // "this" refers to the span, ".parent" refers to the li
         removeTodo($(this).parent());
     });
+
+    // Listen if an li is completed
+    // As with the X, the li's aren't there when the page loads
+    $(".list").on("click", "li", function() {
+        updateTodo($(this));
+    });
+
+
     // We are not handling errors in this app, but you SHOULD!
 });
 
@@ -49,6 +59,8 @@ function addTodo(todo) {
     var newTodo = $("<li class='task'>" + todo.name + " <span>X</span></li>");
     // Store the newTodo's id in jQuery's data so it can be retrived later when you click the X to delete it
     newTodo.data("id", todo._id);
+    // Store the newTodo's completed property for when you click the todo to mark it as done or not done
+    newTodo.data("completed", todo.completed);
     // If the todo is "completed", add class "done" so it displays with the strikethrough styling
     if (todo.completed) {
         newTodo.addClass("done");
@@ -94,4 +106,33 @@ function removeTodo(todo) {
     .catch(function(err) {
         console.log(err);
     })
+}
+
+
+// Upgate a todo by toggling its "completed" property
+function updateTodo (todo) {
+    // Send put request to update entry in the db
+   
+    // build the url for where the PUT request should go
+    var updateUrl = "/api/todos/" + todo.data("id");
+    
+    // build the String for the data that should be updated
+    var isDone = !todo.data("completed"); // we want to flip isDone when it is clicked
+    var updateData = {completed: isDone};  
+
+    $.ajax({
+        method: "PUT",
+        url: updateUrl,
+        // data must be a String, which was built above
+        data: updateData
+    })
+    .then(function(updatedTodo) {
+        // Update the view
+        todo.toggleClass("done");
+        // Toggle completed
+        todo.data("completed", isDone);
+    })
+    .catch(function(err) {
+        console.log(err);
+    });
 }
